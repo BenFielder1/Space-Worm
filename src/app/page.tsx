@@ -2,7 +2,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import StarField from '@/components/StarField';
+// import StarField from '@/components/StarField';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Code2, Grid3x3, Palette, Smartphone } from 'lucide-react';
 
 interface Game {
     id: string;
@@ -45,42 +48,13 @@ export default function Home() {
     return (
         <div className="min-h-screen bg-black text-white overflow-x-hidden">
             {/* Animated background */}
-            <div className="fixed inset-0 z-0">
+            {/* <div className="fixed inset-0 z-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
-                {/* <div className="stars"></div>
-                <div className="stars2"></div>
-                <div className="stars3"></div> */}
                 <StarField />
-            </div>
+            </div> */}
 
             {/* Header/Navigation */}
-            <nav className="relative z-10 px-6 py-4 md:px-12">
-                <div className="flex items-center justify-between max-w-7xl mx-auto">
-                    <div className="flex items-center space-x-3">
-                        <Image
-                            src="/space-worm-logo.png"
-                            alt="Space Worm"
-                            width={120}
-                            height={60}
-                            className="w-24 h-12 md:w-32 md:h-16"
-                        />
-                        <h1 className="text-2xl md:text-3xl font-bold text-white">
-                            Space Worm
-                        </h1>
-                    </div>
-                    <div className="hidden md:flex items-center space-x-8">
-                        <Link href="#games" className="hover:text-lime-400 transition-colors">
-                            Games
-                        </Link>
-                        <Link href="#about" className="hover:text-lime-400 transition-colors">
-                            About
-                        </Link>
-                        <Link href="#contact" className="hover:text-lime-400 transition-colors">
-                            Contact
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            <Header />
 
             {/* Hero Section */}
             <section className="relative z-10 px-6 py-20 md:px-12 md:py-32">
@@ -97,14 +71,25 @@ export default function Home() {
                             />
                         </div>
                     </div>
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-lime-400 bg-clip-text text-transparent">
+                    <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-lime-400 bg-clip-text text-transparent">
                         Explore the Universe of Games
                     </h2>
-                    <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                        Welcome to Space Worm - A collection of Unity-powered games crafted with passion and pixels
+                    <p className="text-lg md:text-xl text-gray-300 mb-4 max-w-2xl mx-auto">
+                        Welcome to Space Worm - A collection of Unity-powered games
                     </p>
+                    <div className="mb-8 flex justify-center space-x-8 text-white">
+                        <div className="flex items-center space-x-2">
+                            <Grid3x3 className="w-5 h-5 text-lime-300" />
+                            <span>Unity</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Code2 className="w-5 h-5 text-lime-300" />
+                            <span>C#</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <Link
-                        href="#games"
+                        href="/games"
                         className="inline-flex items-center px-8 py-3 bg-lime-400 text-black font-semibold rounded-full hover:bg-lime-300 transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-lime-400/25"
                     >
                         Play Now
@@ -112,11 +97,21 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     </Link>
+                    <Link
+                        href="#games"
+                        className="inline-flex items-center px-8 py-3 bg-gray-800 text-white font-semibold rounded-full hover:bg-gray-700 transition-all transform hover:scale-105 border border-gray-700"
+                    >
+                        Browse Featured
+                        <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                        </svg>
+                    </Link>
+                    </div>
                 </div>
             </section>
 
             {/* Games Showcase */}
-            <section id="games" className="relative z-10 px-6 py-20 md:px-12">
+            <section id="games" className="relative z-10 px-6 py-20 md:px-12 mb-16">
                 <div className="max-w-7xl mx-auto">
                     <h3 className="text-3xl md:text-4xl font-bold text-center mb-12">
                         Featured Games
@@ -179,83 +174,68 @@ export default function Home() {
             </section>
 
             {/* About Section */}
-            <section id="about" className="relative z-10 px-6 py-20 md:px-12">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h3 className="text-3xl md:text-4xl font-bold mb-8">
-                        About Space Worm
-                    </h3>
-                    <p className="text-lg text-gray-300 mb-6">
-                        Space Worm is a creative playground where Unity meets imagination.
-                        Each game is a unique experiment in gameplay, visual design, and interactive storytelling.
-                    </p>
-                    <p className="text-lg text-gray-300">
-                        Built with Unity and C#, these games represent a journey through different genres and mechanics,
-                        from fast-paced action to mind-bending puzzles. Each project pushes the boundaries of what&apos;s
-                        possible in browser-based gaming.
-                    </p>
-                </div>
-            </section>
+            <section id="about" className="py-20 relative mb-20">
+                <div className="container mx-auto px-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                                About <span className="text-lime-400">Space Worm</span>
+                            </h2>
+                            <p className="text-gray-300 mb-6 text-lg">
+                                This is a collection of games from a variety of genres, including 2D platformers, first-person shooters, and puzzle games.
+                            </p>
+                            <p className="text-gray-300 mb-8 text-lg">
+                                Each game is built using Unity and C# to target multiple platforms, including WebGL for browser play and Android for mobile devices.
+                            </p>
 
-            {/* Contact Section */}
-            <section id="contact" className="relative z-10 px-6 py-20 md:px-12 mb-20">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h3 className="text-3xl md:text-4xl font-bold mb-8">
-                        Get in Touch
-                    </h3>
-                    <p className="text-lg text-gray-300 mb-8">
-                        Have feedback about the games? Want to collaborate? Let&apos;s connect!
-                    </p>
-                    <div className="flex justify-center space-x-6">
-                        <a
-                            href="https://github.com/yourusername"
-                            className="p-3 bg-gray-800 rounded-full hover:bg-gray-700 hover:text-lime-400 transition-all"
-                            aria-label="GitHub"
-                        >
-                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                            </svg>
-                        </a>
-                        <a
-                            href="https://twitter.com/yourusername"
-                            className="p-3 bg-gray-800 rounded-full hover:bg-gray-700 hover:text-lime-400 transition-all"
-                            aria-label="Twitter"
-                        >
-                            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-                            </svg>
-                        </a>
-                        <a
-                            href="mailto:your@email.com"
-                            className="p-3 bg-gray-800 rounded-full hover:bg-gray-700 hover:text-lime-400 transition-all"
-                            aria-label="Email"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                        </a>
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-6">
+                                <div>
+                                    <div className="text-3xl font-bold text-red-400">{games.length}</div>
+                                    <div className="text-gray-400">Games</div>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-yellow-400">1</div>
+                                    <div className="text-gray-400">Engine</div>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-blue-400">Endless</div>
+                                    <div className="text-gray-400">Fun</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tech Stack Visual */}
+                        <div className="relative">
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="bg-gradient-to-br from-red-900/30 to-red-900/10 p-6 rounded-xl border border-red-500/20">
+                                    <Grid3x3 className="w-12 h-12 text-red-400 mb-4" />
+                                    <h3 className="text-xl font-semibold mb-2">Unity</h3>
+                                    <p className="text-gray-400 text-sm">Game Engine Powering 3D and 2D Graphics</p>
+                                </div>
+                                <div className="bg-gradient-to-br from-yellow-900/30 to-yellow-900/10 p-6 rounded-xl border border-yellow-500/20">
+                                    <Code2 className="w-12 h-12 text-yellow-400 mb-4" />
+                                    <h3 className="text-xl font-semibold mb-2">C#</h3>
+                                    <p className="text-gray-400 text-sm">Object-Oriented Development</p>
+                                </div>
+                                <div className="bg-gradient-to-br from-green-900/30 to-green-900/10 p-6 rounded-xl border border-green-500/20">
+                                    <Palette className="w-12 h-12 text-green-400 mb-4" />
+                                    <h3 className="text-xl font-semibold mb-2">WebGL</h3>
+                                    <p className="text-gray-400 text-sm">Platform for Web Games</p>
+                                </div>
+                                <div className="bg-gradient-to-br from-blue-900/30 to-blue-900/10 p-6 rounded-xl border border-blue-500/20">
+                                    <Smartphone className="w-12 h-12 text-blue-400 mb-4" />
+                                    <h3 className="text-xl font-semibold mb-2">Mobile</h3>
+                                    <p className="text-gray-400 text-sm">Play the Games on Android Devices</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* Footer */}
-            <footer className="relative z-10 border-t border-gray-800 px-6 py-8 md:px-12">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-                    <div className="flex items-center space-x-2 mb-4 md:mb-0">
-                        <Image
-                            src="/space-worm-logo.png"
-                            alt="Space Worm"
-                            width={30}
-                            height={30}
-                            className="w-8 h-8"
-                        />
-                        <span className="text-sm text-gray-400">© 2024 Space Worm. All rights reserved.</span>
-                    </div>
-                    <div className="text-sm text-gray-400">
-                        Built with Unity, Next.js, and
-                        <span className="text-lime-400"> ♥</span>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

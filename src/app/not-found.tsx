@@ -1,11 +1,15 @@
-// app/not-found.tsx
 import Link from 'next/link';
 import Image from 'next/image';
+// import StarField from '@/components/StarField';
 
 export default function NotFound() {
     return (
         <div className="min-h-screen bg-black text-white flex items-center justify-center px-6">
-            <div className="text-center">
+            {/* <div className="fixed inset-0">
+                <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
+                <StarField />
+            </div> */}
+            <div className="text-center z-10">
                 <Image
                     src="/space-worm-logo.png"
                     alt="Space Worm"

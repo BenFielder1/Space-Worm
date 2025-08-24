@@ -1,12 +1,12 @@
 "use client";
 // app/games/[gameId]/page.tsx
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from "next/navigation";
 import UnityGame from '@/components/UnityGame';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
-
+// type GameConfig = Record<string, { title: string; folder: string; description: string }>;
 
 // Game configuration - in a real app, this would come from a database
 const gameConfigs: Record<string, { title: string; folder: string; description: string }> = {
@@ -38,21 +38,25 @@ export default function GamePage() {
     return (
         <div className="min-h-screen bg-black text-white">
             {/* Header */}
-            <nav className="px-6 py-4 md:px-12 border-b border-gray-800">
+            <Header />
+            {/* <nav className="relative px-6 py-4 md:px-12 z-10">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                    <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity w-200 justify-start">
                         <Image
                             src="/space-worm-logo.png"
                             alt="Space Worm"
                             width={40}
                             height={40}
-                            className="w-10 h-10"
+                            className="w-20 h-10"
                         />
                         <span className="text-xl font-semibold">Space Worm</span>
                     </Link>
+                    <h1 className="text-3xl md:text-4xl font-bold mb-2 text-center w-200 justify-center items-center">
+                        {gameConfig.title}
+                    </h1>
                     <Link
-                        href="/"
-                        className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors"
+                        href="/games"
+                        className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors justify-end w-200"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -60,15 +64,19 @@ export default function GamePage() {
                         <span>Back to Games</span>
                     </Link>
                 </div>
-            </nav>
+            </nav> */}
 
-            {/* Game Container */}
-            <div className="px-6 py-8 md:px-12">
-                <div className="max-w-6xl mx-auto">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-2 text-center">
+            <h1 className="relative text-3xl md:text-4xl font-bold mb-2 text-center items-center z-10">
                         {gameConfig.title}
                     </h1>
-                    <p className="text-gray-400 text-center mb-8">{gameConfig.description}</p>
+
+            {/* Game Container */}
+            <div className="px-6 py-8 md:px-12 mb-20">
+                <div className="max-w-6xl mx-auto">
+                    {/* <h1 className="text-3xl md:text-4xl font-bold mb-2 text-center">
+                        {gameConfig.title}
+                    </h1>
+                    <p className="text-gray-400 text-center mb-8">{gameConfig.description}</p> */}
 
                     {/* Unity WebGL Container */}
                     <div className="bg-gray-900 rounded-xl overflow-hidden shadow-2xl mb-8">
@@ -147,6 +155,8 @@ export default function GamePage() {
                     </div>
                 </div>
             </div>
+
+            <Footer />
         </div>
     );
 }
