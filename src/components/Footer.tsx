@@ -14,7 +14,7 @@ export default function Footer() {
                         className="w-16 h-8"
                     />
                     <div>
-                        <p className="text-lg font-bold">Ben Fielder</p>
+                        <p className="text-lg font-bold text-white">Ben Fielder</p>
                         <p className="text-gray-400">Software Engineer and Game Developer</p>
                     </div>
                 </div>

@@ -28,17 +28,37 @@ export default function UnityGame({ gameFolder, gameName, width = '100%', height
         const loadUnityGame = async () => {
             if (!canvasRef.current) return;
 
+            // gameName = "webGL";
+
+            const name = "GL2"
+
             const buildUrl = `/games/${gameFolder}/Build`;
-            const loaderUrl = `${buildUrl}/${gameName}.loader.js`;
+            const loaderUrl = `${buildUrl}/${name}.loader.js`;
             const config = {
-                dataUrl: `${buildUrl}/${gameName}.data`,
-                frameworkUrl: `${buildUrl}/${gameName}.framework.js`,
-                codeUrl: `${buildUrl}/${gameName}.wasm`,
+                dataUrl: `${buildUrl}/${name}.data`,
+                frameworkUrl: `${buildUrl}/${name}.framework.js`,
+                codeUrl: `${buildUrl}/${name}.wasm`,
                 streamingAssetsUrl: "StreamingAssets",
                 companyName: "Space Worm",
-                productName: gameName,
+                productName: name,
                 productVersion: "1.0",
             };
+
+            // const script = document.createElement("script");
+            // script.src = loaderUrl;
+            // script.onload = () => {
+            //     window.createUnityInstance(canvas, config, (progress) => {
+            //         progressBarFull.style.width = 100 * progress + "%";
+            //     }).then((unityInstance) => {
+            //         loadingBar.style.display = "none";
+            //         fullscreenButton.onclick = () => {
+            //             unityInstance.SetFullscreen(1);
+            //         };
+            //     }).catch((message) => {
+            //         alert(message);
+            //     });
+            // };
+            // document.body.appendChild(script);
 
             // Load Unity loader script
             const script = document.createElement("script");
