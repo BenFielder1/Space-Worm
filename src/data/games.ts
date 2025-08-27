@@ -29,7 +29,9 @@ export const gamesData: Game[] = [
         playCount: 1234,
         rating: 4.5,
         duration: '5-10 min',
-        featured: true
+        featured: true,
+        apkUrl: '/downloads/cosmic-runner.apk',
+        apkSize: '25MB'
     },
     {
         id: 'worm-holes',

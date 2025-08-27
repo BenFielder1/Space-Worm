@@ -79,7 +79,7 @@ export default function GamePage() {
 
             {/* Game Container */}
             <div className="px-6 py-8 md:px-12">
-                <div className="max-w-6xl mx-auto">
+                <div className="relative max-w-6xl mx-auto">
                     <h1 className="text-3xl md:text-4xl font-bold mb-2 text-center">
                         {gameConfig.title}
                     </h1>
@@ -286,8 +286,8 @@ export default function GamePage() {
                         </div>
                     </div>
 
-                    {/* Mobile Download Section - Shows only on mobile */}
-                    {isMobile && gameConfig.apkUrl && (
+                    {/* Mobile Download Section */}
+                    {gameConfig.apkUrl && (
                         <div className="mt-6 bg-gradient-to-br from-lime-900/20 to-lime-800/10 backdrop-blur-sm rounded-xl p-6 border border-lime-400/30">
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="flex items-center space-x-4">
@@ -300,7 +300,7 @@ export default function GamePage() {
                                     </div>
                                     <div>
                                         <h3 className="font-semibold">Get the Mobile App</h3>
-                                        <p className="text-sm text-gray-400">Better performance on Android</p>
+                                        <p className="text-sm text-gray-400">Play the Game on Android</p>
                                     </div>
                                 </div>
                                 <a
