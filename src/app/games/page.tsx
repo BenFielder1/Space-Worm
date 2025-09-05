@@ -1,41 +1,26 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import AdvancedFilters from '@/components/AdvancedFilters';
 import SearchSuggestions from '@/components/SearchSuggestions';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import GameItem from '@/components/GameItem';
 import { gamesData } from '@/data/games';
+import ViewToggle from '@/components/ViewToggle';
+import GameListItem from '@/components/GameListItem';
 
 
 // Get unique categories and tags
 const categories = ['All', ...new Set(gamesData.map(game => game.category))];
 const allTags = [...new Set(gamesData.flatMap(game => game.tags))];
 
-type SortOption = 'newest' | 'popular' | 'rating' | 'name';
-
 export default function GamesPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
-    const [sortBy, setSortBy] = useState<SortOption>('newest');
     const [showFilters, setShowFilters] = useState(false);
-    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
     const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
-    const [advancedFilters, setAdvancedFilters] = useState<{
-        categories: string[];
-        tags: string[];
-        minRating: number;
-        minPlayCount: number;
-        duration: string[];
-    }>({
-        categories: [],
-        tags: [],
-        minRating: 0,
-        minPlayCount: 0,
-        duration: []
-    });
 
     // Filter and sort games
     const filteredGames = useMemo(() => {
@@ -58,43 +43,13 @@ export default function GamesPage() {
         // Tags filter
         if (selectedTags.length > 0) {
             filtered = filtered.filter(game =>
-                selectedTags.every(tag => game.tags.includes(tag))
+                // selectedTags.every(tag => game.tags.includes(tag))
+                selectedTags.some(tag => game.tags.includes(tag))
             );
-        }
-
-        // Advanced filters
-        if (advancedFilters.minRating > 0) {
-            filtered = filtered.filter(game => game.rating >= advancedFilters.minRating);
-        }
-
-        if (advancedFilters.minPlayCount > 0) {
-            filtered = filtered.filter(game => game.playCount >= advancedFilters.minPlayCount);
-        }
-
-        if (advancedFilters.duration.length > 0) {
-            filtered = filtered.filter(game =>
-                advancedFilters.duration.includes(game.duration)
-            );
-        }
-
-        // Sort
-        switch (sortBy) {
-            case 'newest':
-                filtered.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
-                break;
-            case 'popular':
-                filtered.sort((a, b) => b.playCount - a.playCount);
-                break;
-            case 'rating':
-                filtered.sort((a, b) => b.rating - a.rating);
-                break;
-            case 'name':
-                filtered.sort((a, b) => a.title.localeCompare(b.title));
-                break;
         }
 
         return filtered;
-    }, [searchQuery, selectedCategory, selectedTags, sortBy, advancedFilters]);
+    }, [searchQuery, selectedCategory, selectedTags]);
 
     // Get search suggestions
     const searchSuggestions = useMemo(() => {
@@ -120,16 +75,6 @@ export default function GamesPage() {
                 : [...prev, tag]
         );
     };
-
-    const handleApplyAdvancedFilters = (filters: typeof advancedFilters) => {
-        setAdvancedFilters(filters);
-    };
-
-    const activeFilterCount =
-        (advancedFilters.minRating > 0 ? 1 : 0) +
-        (advancedFilters.minPlayCount > 0 ? 1 : 0) +
-        advancedFilters.duration.length +
-        selectedTags.length;
 
     return (
         <>
@@ -188,8 +133,6 @@ export default function GamesPage() {
                                     )}
                                 </div>
 
-                                {/* View Toggle - Now positioned next to search */}
-                                {/* <ViewToggle view={viewMode} onViewChange={setViewMode} /> */}
                             </div>
 
                             {/* Filter Controls */}
@@ -213,21 +156,6 @@ export default function GamesPage() {
                                     </div>
                                 </div>
 
-                                {/* Sort Dropdown */}
-                                <div className="flex items-center space-x-2">
-                                    <span className="text-sm text-gray-400">Sort by:</span>
-                                    <select
-                                        value={sortBy}
-                                        onChange={(e) => setSortBy(e.target.value as SortOption)}
-                                        className="px-4 py-1 bg-gray-800 text-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-lime-400"
-                                    >
-                                        <option value="newest">Newest</option>
-                                        <option value="popular">Most Popular</option>
-                                        <option value="rating">Highest Rated</option>
-                                        <option value="name">Name (A-Z)</option>
-                                    </select>
-                                </div>
-
                                 {/* Toggle Filters Buttons */}
                                 <div className="flex gap-2">
                                     <button
@@ -239,17 +167,9 @@ export default function GamesPage() {
                                         </svg>
                                         <span>Quick Filters</span>
                                     </button>
-
-                                    <button
-                                        onClick={() => setShowAdvancedFilters(true)}
-                                        className="flex items-center space-x-2 px-4 py-1 bg-gray-800 text-gray-300 rounded-full text-sm hover:bg-gray-700 transition-colors"
-                                    >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                        </svg>
-                                        <span>Advanced ({activeFilterCount})</span>
-                                    </button>
                                 </div>
+
+                                <ViewToggle view={viewMode} onViewChange={setViewMode} />
                             </div>
 
                             {/* Tags Filter (Quick Filters - Collapsible) */}
@@ -292,11 +212,19 @@ export default function GamesPage() {
 
                         {/* Games Display - Grid or List View */}
                         {filteredGames.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredGames.map((game) => (
-                                    <GameItem key={game.id} game={game} />
-                                ))}
-                            </div>
+                            viewMode === 'grid' ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {filteredGames.map((game) => (
+                                        <GameItem key={game.id} game={game} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    {filteredGames.map((game) => (
+                                        <GameListItem key={game.id} game={game} />
+                                    ))}
+                                </div>
+                            )
                         ) : (
                             /* No Results */
                             <div className="text-center py-20">
@@ -312,13 +240,6 @@ export default function GamesPage() {
                                         setSearchQuery('');
                                         setSelectedCategory('All');
                                         setSelectedTags([]);
-                                        setAdvancedFilters({
-                                            categories: [],
-                                            tags: [],
-                                            minRating: 0,
-                                            minPlayCount: 0,
-                                            duration: []
-                                        });
                                     }}
                                     className="px-6 py-3 bg-lime-400 text-black font-semibold rounded-full hover:bg-lime-300 transition-all"
                                 >
@@ -337,14 +258,6 @@ export default function GamesPage() {
                         )}
                     </div>
                 </div>
-
-                {/* Advanced Filters Modal */}
-                <AdvancedFilters
-                    isOpen={showAdvancedFilters}
-                    onClose={() => setShowAdvancedFilters(false)}
-                    onApply={handleApplyAdvancedFilters}
-                    currentFilters={advancedFilters}
-                />
 
             </div>
             <Footer />

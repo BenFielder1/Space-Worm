@@ -3,9 +3,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-// import StarField from '@/components/StarField';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import { gamesData } from '@/data/games';
 
 export default function AboutPage() {
     const skills = [
@@ -14,53 +14,47 @@ export default function AboutPage() {
         'TypeScript', 'React', 'Next.js', 'Tailwind CSS'
     ];
 
-    const stats = [
-        { label: 'Games Created', value: '6+' },
-        { label: 'Years Experience', value: '5' },
-        { label: 'Lines of Code', value: '100K+' },
-        // { label: 'Coffee Consumed', value: '∞' }
-    ];
-
     const timeline = [
         {
-            year: '2019',
+            year: '2020',
             title: 'The Beginning',
             description: 'Started learning Unity and game development'
         },
         {
-            year: '2020',
-            title: 'First Game Launch',
-            description: 'Released first WebGL game to positive feedback'
-        },
-        {
             year: '2021',
             title: 'Skill Expansion',
-            description: 'Learned advanced physics simulation and AI programming'
+            description: 'Learned 3D modeling, animation, and game design'
         },
         {
             year: '2022',
-            title: 'Growing Library',
-            description: 'Developed multiple game prototypes and experiments'
+            title: 'Space Worm Born',
+            description: 'Started branding my games under the Space Worm name'
         },
         {
             year: '2023',
-            title: 'Space Worm Born',
-            description: 'Created Space Worm platform to showcase all games'
+            title: 'Skill Expansion',
+            description: 'Started learning Unity multiplayer networking for game development'
         },
         {
             year: '2024',
-            title: 'Continuous Innovation',
-            description: 'Launching new games and improving the platform'
+            title: 'Growing Library',
+            description: 'Developed a collection of game prototypes and experiments'
+        },
+        {
+            year: '2025',
+            title: 'Space Worm Evolves',
+            description: 'Launched the Space Worm website to showcase my games'
         }
+    ];
+
+    const stats = [
+        { label: 'Games Created', value: `${gamesData.length}+` },
+        { label: 'Years Experience', value: `${timeline.length-1}` },
+        // { label: 'Lines of Code', value: '100K+' },
     ];
 
     return (
         <div className="min-h-screen bg-black text-white">
-            {/* Background */}
-            {/* <div className="fixed inset-0 z-0">
-                <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
-                <StarField />
-            </div> */}
 
             <Header />
 
@@ -119,11 +113,6 @@ export default function AboutPage() {
                                         design to programming and deployment. Each game represents countless hours
                                         of learning, experimenting, and refining to create something special.
                                     </p>
-                                    {/* <p>
-                                        My journey in game development began with Unity and C#, and has expanded to include
-                                        web technologies, physics simulations, and AI programming. Every project is an opportunity
-                                        to learn something new and share that creativity with players around the world.
-                                    </p> */}
                                 </div>
 
                                 {/* Social Links */}
@@ -188,7 +177,7 @@ export default function AboutPage() {
             {/* Stats Section */}
             <section className="relative z-10 px-6 py-16 md:px-12">
                 <div className="max-w-6xl mx-auto">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-2 gap-8">
                         {stats.map((stat) => (
                             <div key={stat.label} className="text-center">
                                 <div className="text-4xl md:text-5xl font-bold text-lime-400 mb-2">

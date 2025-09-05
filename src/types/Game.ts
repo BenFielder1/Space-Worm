@@ -6,10 +6,6 @@ export default interface Game {
     playUrl: string;
     tags: string[];
     category: string;
-    releaseDate: string;
-    playCount: number;
-    rating: number;
-    duration: string;
     featured: boolean;
     apkUrl?: string;
     apkSize?: string;

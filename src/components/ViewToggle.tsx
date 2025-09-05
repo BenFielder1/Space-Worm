@@ -8,10 +8,10 @@ interface ViewToggleProps {
 
 export default function ViewToggle({ view, onViewChange }: ViewToggleProps) {
     return (
-        <div className="flex items-center bg-gray-800 rounded-lg p-1 w-20">
+        <div className="flex items-center bg-gray-800 rounded-full p-1 w-20 h-7">
             <button
                 onClick={() => onViewChange('grid')}
-                className={`p-2 rounded transition-all ${view === 'grid'
+                className={`h-5.5 px-2 rounded-l-full transition-all ${view === 'grid'
                         ? 'bg-lime-400 text-black'
                         : 'text-gray-400 hover:text-white'
                     }`}
@@ -25,7 +25,7 @@ export default function ViewToggle({ view, onViewChange }: ViewToggleProps) {
             </button>
             <button
                 onClick={() => onViewChange('list')}
-                className={`p-2 rounded transition-all ${view === 'list'
+                className={`h-5.5 px-2 rounded-r-full transition-all ${view === 'list'
                         ? 'bg-lime-400 text-black'
                         : 'text-gray-400 hover:text-white'
                     }`}
