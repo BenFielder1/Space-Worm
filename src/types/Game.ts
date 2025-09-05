@@ -13,4 +13,8 @@ export default interface Game {
     featured: boolean;
     apkUrl?: string;
     apkSize?: string;
+    aspect: string;
+    width?: string;
+    height?: string;
+    fullscreen?: boolean;
 }

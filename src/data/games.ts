@@ -1,22 +1,25 @@
 import Game from "@/types/Game";
 
-// export const games: Game[] = [
-//     {
-//         id: "",
-//         title: "",
-//         description: "",
-//         thumbnail: "",
-//         playUrl: "",
-//         tags: [],
-//         category: "",
-//         releaseDate: "",
-//         playCount: 0,
-//         rating: 0,
-//         duration: ""
-//     },
-// ]
-
 export const gamesData: Game[] = [
+    {
+        id: 'pyramid-numbers',
+        title: 'Pyramid Numbers',
+        description: 'Merge and add numbers to reach the top of the pyramid',
+        thumbnail: '/games/pyramidnumbers.png',
+        playUrl: '/games/pyramid-numbers',
+        tags: ['Puzzle', '2D', 'Pyramids'],
+        category: 'Action',
+        releaseDate: '2024-01-15',
+        playCount: 1234,
+        rating: 4.5,
+        duration: '5-10 min',
+        featured: true,
+        apkUrl: '/downloads/PyramidNumbers.apk',
+        apkSize: '25MB',
+        aspect: '9/16',
+        width: '100',
+        fullscreen: false
+    },
     {
         id: 'cosmic-runner',
         title: 'Cosmic Runner',
@@ -30,8 +33,11 @@ export const gamesData: Game[] = [
         rating: 4.5,
         duration: '5-10 min',
         featured: true,
-        apkUrl: '/downloads/cosmic-runner.apk',
-        apkSize: '25MB'
+        apkUrl: '/downloads/PyramidNumbers.apk',
+        apkSize: '25MB',
+        aspect: '9/16',
+        width: '100',
+        fullscreen: false
     },
     {
         id: 'worm-holes',
@@ -45,7 +51,8 @@ export const gamesData: Game[] = [
         playCount: 890,
         rating: 4.8,
         duration: '15-20 min',
-        featured: true
+        featured: true,
+        aspect: 'video',
     },
     {
         id: 'space-defender',
@@ -59,7 +66,8 @@ export const gamesData: Game[] = [
         playCount: 2100,
         rating: 4.6,
         duration: '20-30 min',
-        featured: true
+        featured: false,
+        aspect: 'video',
     },
     {
         id: 'asteroid-miner',
@@ -73,7 +81,8 @@ export const gamesData: Game[] = [
         playCount: 756,
         rating: 4.3,
         duration: '10-15 min',
-        featured: false
+        featured: false,
+        aspect: 'video',
     },
     {
         id: 'gravity-wells',
@@ -87,7 +96,8 @@ export const gamesData: Game[] = [
         playCount: 445,
         rating: 4.7,
         duration: '10-15 min',
-        featured: false
+        featured: false,
+        aspect: 'video',
     },
     {
         id: 'star-fighter',
@@ -101,6 +111,7 @@ export const gamesData: Game[] = [
         playCount: 3200,
         rating: 4.4,
         duration: '5-10 min',
-        featured: false
+        featured: false,
+        aspect: 'video',
     }
 ];
