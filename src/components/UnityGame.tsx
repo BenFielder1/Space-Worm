@@ -7,8 +7,7 @@ import { useEffect, useRef } from 'react';
 interface UnityGameProps {
     gameFolder: string;
     gameName: string;
-    width?: number | string;
-    height?: number | string;
+    fullscreen?: boolean;
 }
 
 declare global {
@@ -17,7 +16,7 @@ declare global {
     }
 }
 
-export default function UnityGame({ gameFolder, gameName, width = '100%', height = '100%' }: UnityGameProps) {
+export default function UnityGame({ gameFolder, gameName, fullscreen = true }: UnityGameProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const unityInstanceRef = useRef<any>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
@@ -28,15 +27,19 @@ export default function UnityGame({ gameFolder, gameName, width = '100%', height
         const loadUnityGame = async () => {
             if (!canvasRef.current) return;
 
+            // gameName = "webGL";
+
+            // const name = "GL2"
+
             const buildUrl = `/games/${gameFolder}/Build`;
-            const loaderUrl = `${buildUrl}/${gameName}.loader.js`;
+            const loaderUrl = `${buildUrl}/${gameFolder}.loader.js`;
             const config = {
-                dataUrl: `${buildUrl}/${gameName}.data`,
-                frameworkUrl: `${buildUrl}/${gameName}.framework.js`,
-                codeUrl: `${buildUrl}/${gameName}.wasm`,
+                dataUrl: `${buildUrl}/${gameFolder}.data`,
+                frameworkUrl: `${buildUrl}/${gameFolder}.framework.js`,
+                codeUrl: `${buildUrl}/${gameFolder}.wasm`,
                 streamingAssetsUrl: "StreamingAssets",
                 companyName: "Space Worm",
-                productName: gameName,
+                productName: gameFolder,
                 productVersion: "1.0",
             };
 
@@ -112,23 +115,24 @@ export default function UnityGame({ gameFolder, gameName, width = '100%', height
             {/* Unity Canvas */}
             <canvas
                 ref={canvasRef}
-                style={{ width, height }}
                 className="w-full h-full"
                 tabIndex={-1}
             />
 
             {/* Fullscreen Button */}
-            <button
-                onClick={handleFullscreen}
-                className="absolute bottom-4 right-4 p-2 bg-gray-800/80 hover:bg-gray-700 rounded-lg transition-colors"
-                aria-label="Fullscreen"
-            >
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                    />
-                </svg>
-            </button>
+            {fullscreen && (
+                <button
+                    onClick={handleFullscreen}
+                    className="absolute bottom-4 right-4 p-2 bg-gray-800/80 hover:bg-gray-700 rounded-lg transition-colors"
+                    aria-label="Fullscreen"
+                >
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                            d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                        />
+                    </svg>
+                </button>
+            )}
         </div>
     );
 }
