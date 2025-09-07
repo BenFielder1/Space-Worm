@@ -31,11 +31,11 @@ export const gamesData: Game[] = [
         fullscreen: true
     },
     {
-        id: 'tile-vania',
-        title: 'Tile Vania',
+        id: 'tile-adventure',
+        title: 'Tile Adventure',
         description: 'Run, jump and fight your way through a to reach the end of each level.',
-        thumbnail: '/games/tile-vania.jpg',
-        playUrl: '/games/tile-vania',
+        thumbnail: '/games/tile-adventure.jpg',
+        playUrl: '/games/tile-adventure',
         tags: ['Platformer', 'Action', '2D'],
         category: 'Platformer',
         featured: true,

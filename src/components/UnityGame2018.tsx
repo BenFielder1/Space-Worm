@@ -142,6 +142,7 @@ export default function UnityGame2018({
 
             // Clean up container
             if (containerRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 containerRef.current.innerHTML = '';
             }
         };
