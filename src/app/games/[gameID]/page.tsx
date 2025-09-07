@@ -6,6 +6,7 @@ import { notFound, usePathname } from 'next/navigation';
 // import Link from 'next/link';
 // import Image from 'next/image';
 import UnityGame from '@/components/UnityGame';
+import UnityGameUniversal from '@/components/UnityGameUniversal';
 // import { isMobileDevice } from '@/utils/deviceDetection';
 import { gamesData } from '@/data/games';
 import MobileGameCard from '@/components/MobileGameCard';
@@ -83,13 +84,13 @@ export default function GamePage() {
                         ) : (
                             /* Unity WebGL Game */
                             <div className={`aspect-${gameConfig.aspect} 
-                                                ${gameConfig.width ? `w-${gameConfig.width}` : ""}
+                                                ${gameConfig.width ? `w-${gameConfig.width}` : ""} 
                                                 ${gameConfig.height ? `h-${gameConfig.height}` : ""} relative`}>
                             {/* <div className={`aspect-9/16 w-100 relative`}> */}
-                                <UnityGame
+                                <UnityGameUniversal
                                     gameFolder={gameConfig.id}
                                     gameName={gameConfig.title}
-                                    fullscreen={gameConfig.fullscreen}
+                                    // fullscreen={gameConfig.fullscreen}
                                     // width={"calc((100vh - 200px) * (9/16))"}
                                     // height={"calc((100vh - 200px))"}
                                 />

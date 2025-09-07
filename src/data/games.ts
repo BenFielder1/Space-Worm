@@ -43,5 +43,18 @@ export const gamesData: Game[] = [
         aspect: 'video',
         width: 'full',
         fullscreen: true
+    },
+    {
+        id: 'block-breaker',
+        title: 'Block Breaker',
+        description: 'Keep the ball in play and break all the blocks to advance to the next level.',
+        thumbnail: '/games/tile-vania.jpg',
+        playUrl: '/games/block-breaker',
+        tags: ['Casual', 'Blocks', '2D'],
+        category: 'Casual',
+        featured: true,
+        aspect: 'video',
+        width: 'full',
+        fullscreen: true
     }
 ];
