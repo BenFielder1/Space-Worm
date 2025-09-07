@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { notFound, usePathname } from 'next/navigation';
 // import Link from 'next/link';
 // import Image from 'next/image';
-import UnityGame from '@/components/UnityGame';
+// import UnityGame from '@/components/UnityGame';
 import UnityGameUniversal from '@/components/UnityGameUniversal';
 // import { isMobileDevice } from '@/utils/deviceDetection';
 import { gamesData } from '@/data/games';
