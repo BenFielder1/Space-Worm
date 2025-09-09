@@ -5,7 +5,7 @@ export const gamesData: Game[] = [
         id: 'pyramid-numbers',
         title: 'Pyramid Numbers',
         description: 'Merge and add numbers to reach the top of the pyramid.',
-        thumbnail: '/games/pyramidnumbers.png',
+        thumbnail: '/games/pyramid-numbers.png',
         playUrl: '/games/pyramid-numbers',
         tags: ['Puzzle', '2D', 'Pyramids'],
         category: 'Puzzle',
