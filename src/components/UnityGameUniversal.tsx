@@ -80,8 +80,6 @@ export default function UnityGameUniversal({
             <UnityGame2018
                 gameFolder={gameFolder}
                 gameName={gameName}
-                // width={width}
-                // height={height}
             />
         );
     }
@@ -91,8 +89,6 @@ export default function UnityGameUniversal({
         <UnityGame
             gameFolder={gameFolder}
             gameName={gameName}
-            // width={width}
-            // height={height}
         />
     );
 }
