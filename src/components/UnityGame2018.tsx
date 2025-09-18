@@ -1,5 +1,6 @@
+/* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// components/UnityGame2018.tsx
+// components/UnityGame2018.tsx (Fixed cleanup)
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -7,31 +8,30 @@ import { useEffect, useRef, useState } from 'react';
 interface UnityGame2018Props {
     gameFolder: string;
     gameName: string;
-    width?: number | string;
-    height?: number | string;
 }
 
 declare global {
     interface Window {
         UnityLoader: any;
         gameInstance: any;
+        // Unity 2018 specific
+        Module: any;
+        unityFramework: any;
     }
 }
 
-export default function UnityGame2018({
-    gameFolder,
-    gameName,
-    // width = '100%',
-    // height = '100%'
-}: UnityGame2018Props) {
+export default function UnityGame2018({ gameFolder, gameName }: UnityGame2018Props) {
     const containerRef = useRef<HTMLDivElement>(null);
+    const gameInstanceRef = useRef<any>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [loadProgress, setLoadProgress] = useState(0);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        let gameInstance: any = null;
         let isMounted = true;
+        let gameContainer: HTMLDivElement | null = null;
+        let audioNodes: any[] = [];
 
         const loadUnityGame = async () => {
             try {
@@ -39,74 +39,85 @@ export default function UnityGame2018({
                 const loaderUrl = `${buildUrl}/UnityLoader.js`;
                 const configUrl = `${buildUrl}/${gameFolder}.json`;
 
-                // Create container div for Unity
                 const gameContainer = document.createElement('div');
                 gameContainer.id = `gameContainer-${Date.now()}`;
-                // gameContainer.style.width = '100%';
-                // gameContainer.style.height = '100%';
 
                 if (containerRef.current) {
                     containerRef.current.appendChild(gameContainer);
                 }
 
-                // Load UnityLoader.js
                 const script = document.createElement('script');
                 script.src = loaderUrl;
                 script.async = true;
 
                 await new Promise((resolve, reject) => {
                     script.onload = resolve;
-                    script.onerror = () => reject(new Error('Failed to load Unity Loader'));
+                    script.onerror = reject;
                     document.body.appendChild(script);
                 });
 
-                // Wait a bit for UnityLoader to be available
+                // Wait for UnityLoader
                 let attempts = 0;
                 while (!window.UnityLoader && attempts < 10) {
                     await new Promise(resolve => setTimeout(resolve, 100));
                     attempts++;
                 }
 
-                if (!window.UnityLoader) {
-                    throw new Error('UnityLoader not found after loading script');
+                if (!window.UnityLoader || !isMounted) return;
+
+                // Track audio nodes created
+                const originalCreateGain = window.AudioContext?.prototype.createGain;
+                const originalCreateSource = window.AudioContext?.prototype.createBufferSource;
+
+                if (window.AudioContext) {
+                    window.AudioContext.prototype.createGain = function () {
+                        const node = originalCreateGain?.apply(this, arguments as any);
+                        if (node) audioNodes.push(node);
+                        return node;
+                    };
+
+                    window.AudioContext.prototype.createBufferSource = function () {
+                        const node = originalCreateSource?.apply(this, arguments as any);
+                        if (node) audioNodes.push(node);
+                        return node;
+                    };
                 }
 
-                // Create Unity instance
-                if (isMounted) {
-                    gameInstance = window.UnityLoader.instantiate(
-                        gameContainer,
-                        configUrl,
-                        {
-                            onProgress: function (gameInstance: any, progress: number) {
-                                if (isMounted) {
-                                    setLoadProgress(progress);
-                                    if (progress === 1) {
-                                        setTimeout(() => {
-                                            if (isMounted) {
-                                                setIsLoading(false);
-                                            }
-                                        }, 100);
-                                    }
+                gameInstanceRef.current = window.UnityLoader.instantiate(
+                    gameContainer,
+                    configUrl,
+                    {
+                        onProgress: function (gameInstance: any, progress: number) {
+                            if (isMounted) {
+                                setLoadProgress(progress);
+                                if (progress === 1) {
+                                    console.log('Unity 2018 game loaded');
+                                    setTimeout(() => {
+                                        if (isMounted) {
+                                            setIsLoading(false);
+                                            // Store canvas reference
+                                            canvasRef.current = gameContainer?.querySelector('canvas') || null;
+                                        }
+                                    }, 100);
                                 }
-                            },
-                            Module: {
-                                onRuntimeInitialized: function () {
-                                    console.log('Unity 2018 runtime initialized');
-                                },
-                                // Unity 2018 specific settings
-                                TOTAL_MEMORY: 268435456, // 256MB
-                                TOTAL_STACK: 5242880,    // 5MB
-                                errorhandler: null,
-                                compatibilitycheck: null,
-                                backgroundColor: "#231F20",
-                                splashStyle: "Dark"
                             }
+                        },
+                        Module: {
+                            onRuntimeInitialized: function () {
+                                console.log('Unity 2018 runtime initialized');
+                            },
+                            // Unity 2018 specific settings
+                            TOTAL_MEMORY: 268435456, // 256MB
+                            TOTAL_STACK: 5242880,    // 5MB
+                            errorhandler: null,
+                            compatibilitycheck: null,
+                            backgroundColor: "#231F20",
+                            splashStyle: "Dark"
                         }
-                    );
+                    }
+                );
 
-                    // Store instance globally for fullscreen
-                    window.gameInstance = gameInstance;
-                }
+                window.gameInstance = gameInstanceRef.current;
 
             } catch (err) {
                 console.error('Unity loading error:', err);
@@ -119,60 +130,188 @@ export default function UnityGame2018({
 
         loadUnityGame();
 
-        // Cleanup
-        return () => {
+        // Comprehensive cleanup function
+        const cleanup = () => {
+            console.log('Starting Unity 2018 cleanup...');
             isMounted = false;
 
-            // Clean up Unity instance
-            if (gameInstance) {
-                try {
-                    // Unity 2018 doesn't have Quit method, but we can try to clean up
-                    if (gameInstance.Module && gameInstance.Module.canvas) {
-                        gameInstance.Module.canvas.remove();
+            try {
+                // 1. Stop all audio nodes
+                audioNodes.forEach(node => {
+                    try {
+                        if (node.disconnect) node.disconnect();
+                        if (node.stop) node.stop(0);
+                    } catch (e) { console.error('Audio node cleanup error:', e); }
+                });
+                audioNodes = [];
+
+                // 2. Close all audio contexts
+                if (typeof window !== 'undefined') {
+                    // Get all possible audio contexts
+                    ['AudioContext', 'webkitAudioContext'].forEach(ctxName => {
+                        try {
+                            const contexts = (window as any)[`__${ctxName}__`] || [];
+                            contexts.forEach((ctx: AudioContext) => {
+                                if (ctx.state !== 'closed') {
+                                    ctx.close();
+                                }
+                            });
+                        } catch (e) { console.error('AudioContext cleanup error:', e); }
+                    });
+
+                    // Try to access Unity's audio context
+                    if (gameInstanceRef.current?.Module?.SDL2?.audioContext) {
+                        try {
+                            gameInstanceRef.current.Module.SDL2.audioContext.close();
+                        } catch (e) { console.error('Unity audioContext cleanup error:', e); }
                     }
-                } catch (e) {
-                    console.error('Cleanup error:', e);
                 }
+
+                // 3. Stop Unity Module execution
+                if (window.Module) {
+                    try {
+                        // Stop the main loop
+                        if (window.Module.pauseMainLoop) {
+                            window.Module.pauseMainLoop();
+                        }
+                        if (window.Module.setStatus) {
+                            window.Module.setStatus('');
+                        }
+                        // Clear runtime
+                        if (window.Module.onRuntimeInitialized) {
+                            window.Module.onRuntimeInitialized = () => { };
+                        }
+                        // Abort execution
+                        if (window.Module.abort) {
+                            window.Module.abort();
+                        }
+                    } catch (e) {
+                        console.error('Module cleanup error:', e);
+                    }
+                }
+
+                // 4. Destroy WebGL context
+                if (canvasRef.current) {
+                    try {
+                        const gl = canvasRef.current.getContext('webgl') ||
+                            canvasRef.current.getContext('webgl2') ||
+                            canvasRef.current.getContext('experimental-webgl');
+
+                        if (gl) {
+                            // Clear all WebGL resources
+                            if ('bindBuffer' in gl) {
+                                gl.bindBuffer(gl.ARRAY_BUFFER, null);
+                                gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+                                gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+                                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                            }
+                        }
+
+                        // Remove canvas
+                        canvasRef.current.width = 1;
+                        canvasRef.current.height = 1;
+                        canvasRef.current.remove();
+                        canvasRef.current = null;
+                    } catch (e) {
+                        console.error('Canvas cleanup error:', e);
+                    }
+                }
+
+                // 5. Clean up game instance
+                if (gameInstanceRef.current) {
+                    try {
+                        // Try Unity-specific cleanup methods
+                        if (gameInstanceRef.current.Quit) {
+                            gameInstanceRef.current.Quit();
+                        }
+                        if (gameInstanceRef.current.Delete) {
+                            gameInstanceRef.current.Delete();
+                        }
+                        // Clear Module reference
+                        if (gameInstanceRef.current.Module) {
+                            gameInstanceRef.current.Module = null;
+                        }
+                    } catch (e) { console.error('Game instance cleanup error:', e); }
+                    gameInstanceRef.current = null;
+                }
+
+                // 6. Remove global references
+                if (window.gameInstance) {
+                    window.gameInstance = null;
+                }
+                if (window.Module) {
+                    window.Module = null;
+                }
+                if (window.unityFramework) {
+                    window.unityFramework = null;
+                }
+
+                // 7. Clear the container
+                if (gameContainer) {
+                    // Remove all event listeners
+                    const newContainer = gameContainer.cloneNode(false) as HTMLDivElement;
+                    gameContainer.parentNode?.replaceChild(newContainer, gameContainer);
+                    gameContainer = null;
+                }
+
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = '';
+                }
+
+                // 8. Force garbage collection hint
+                if ((window as any).gc) {
+                    (window as any).gc();
+                }
+
+            } catch (e) {
+                console.error('Cleanup error:', e);
             }
 
-            // Remove global reference
-            if (window.gameInstance === gameInstance) {
-                window.gameInstance = null;
-            }
+            console.log('Unity 2018 cleanup completed');
+        };
 
-            // Clean up container
-            if (containerRef.current) {
-                // eslint-disable-next-line react-hooks/exhaustive-deps
-                containerRef.current.innerHTML = '';
+        // Handle tab visibility
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                try {
+                    // Mute Unity audio
+                    if (gameInstanceRef.current?.Module?.SDL2) {
+                        gameInstanceRef.current.Module.SDL2.audio?.pause();
+                    }
+                    // Pause all audio contexts
+                    if (gameInstanceRef.current?.Module?.SDL2?.audioContext) {
+                        gameInstanceRef.current.Module.SDL2.audioContext.suspend();
+                    }
+                } catch (e) { console.error('Visibility change error:', e);}
             }
+        };
+
+        window.addEventListener('beforeunload', cleanup);
+        window.addEventListener('pagehide', cleanup);
+        window.addEventListener('unload', cleanup);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            cleanup();
+            window.removeEventListener('beforeunload', cleanup);
+            window.removeEventListener('pagehide', cleanup);
+            window.removeEventListener('unload', cleanup);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [gameFolder, gameName]);
 
     const handleFullscreen = () => {
-        if (window.gameInstance && window.gameInstance.SetFullscreen) {
-            window.gameInstance.SetFullscreen(1);
-        } else {
-            // Fallback to canvas fullscreen
-            const canvas = containerRef.current?.querySelector('canvas');
-            if (canvas && canvas.requestFullscreen) {
-                canvas.requestFullscreen();
-            }
+        const canvas = containerRef.current?.querySelector('canvas');
+        if (canvas?.requestFullscreen) {
+            canvas.requestFullscreen();
         }
     };
 
     return (
         <div className="relative w-full h-full bg-black rounded-lg overflow-hidden">
-            {/* Game Container */}
-            <div
-                ref={containerRef}
-                // className="w-full h-full"
-                // style={{ width, height }}
-                tabIndex={-1}
-            >
-                {/* Unity will inject its canvas here */}
-            </div>
+            <div ref={containerRef} className="w-full h-full" />
 
-            {/* Loading Overlay */}
+            {/* Loading and error states remain the same */}
             {isLoading && (
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gray-900">
                     <div className="mb-8">
@@ -181,7 +320,6 @@ export default function UnityGame2018({
                     <div className="text-white text-lg mb-4">Loading {gameName}...</div>
                     <div className="text-gray-400 text-sm mb-4">Unity 2018 Build</div>
 
-                    {/* Progress Bar */}
                     <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
                         <div
                             className="h-full bg-lime-400 transition-all duration-300 ease-out"
